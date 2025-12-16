@@ -1,45 +1,471 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="en" dir="ltr">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@yield('title', 'Mono - Responsive Admin & Dashboard Template')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- theme meta -->
+    <meta name="theme-name" content="mono" />
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto" rel="stylesheet">
+    <link href="{{ asset('assets/theme/plugins/material/css/materialdesignicons.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/theme/plugins/simplebar/simplebar.css') }}" rel="stylesheet" />
+    <!-- PLUGINS CSS STYLE -->
+    <link href="{{ asset('assets/theme/plugins/nprogress/nprogress.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/theme/plugins/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css') }}"
+        rel="stylesheet" />
+    <link href="{{ asset('assets/theme/plugins/jvectormap/jquery-jvectormap-2.0.3.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/theme/plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/theme/https://cdn.quilljs.com/1.3.6/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/theme/plugins/toaster/toastr.min.css') }}" rel="stylesheet" />
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- MONO CSS -->
+    <link id="main-css-href" rel="stylesheet" href="{{ asset('assets/theme/css/style.css') }}" />
+    <!-- FAVICON -->
+    <link href="{{ asset('assets/theme/images/favicon-new.png') }}" rel="favicon icon" />
+    <script src="{{ asset('assets/theme/plugins/nprogress/nprogress.js') }}"></script>
+    <style>
+        #productsTable.table-hover tbody tr:hover {
+            background-color: #F2F2F2 !important;
+        }
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        #productsTable.table-hover tbody tr:hover td {
+            color: #000000 !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+        }
+    </style>
+</head>
 
-        <!-- Styles -->
-        @livewireStyles
-    </head>
-    <body class="font-sans antialiased">
-        <x-banner />
+<body class="navbar-fixed sidebar-fixed" id="body">
+    <script>
+        NProgress.configure({
+            showSpinner: false
+        });
+        NProgress.start();
+    </script>
 
-        <div class="min-h-screen bg-gray-100">
-            @livewire('navigation-menu')
+    <div class="wrapper">
+        <!-- ====================================
+          ——— LEFT SIDEBAR WITH OUT FOOTER
+        ===================================== -->
+        <aside class="left-sidebar sidebar-dark" id="left-sidebar">
+            <div id="sidebar" class="sidebar sidebar-with-footer">
+                <!-- Aplication Brand -->
+                <div class="app-brand">
+                    <a href="{{ route('dashboard') }}">
+                        <img src="{{ asset('assets/theme/images/logo.png') }}" style="height: 50px; width:50px" alt="Mono">
+                        <span class="brand-name">Sembark Tech</span>
+                    </a>
+                </div>
+                <!-- begin sidebar scrollbar -->
+                <div class="sidebar-left" data-simplebar style="height: 100%;">
+                    <!-- sidebar menu -->
+                    <ul class="nav sidebar-inner" id="sidebar-menu">
+                        <li class="active">
+                            <a class="sidenav-item-link" href="{{ route('dashboard') }}">
+                                <i class="mdi mdi-home-heart"></i>
+                                <span class="nav-text"> Dashboard</span>
+                            </a>
+                        </li>
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+                        <li class="section-title">
+                           URL-SHORTNER
+                        </li>
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                data-target="#category" aria-expanded="false" aria-controls="category">
+                                <i class="mdi mdi mdi-office-building"></i>
+                                <span class="nav-text">Companies <h5 class="badge badge-primary badge-pill">
+                                        {{ $count['guests'] ?? '' }}
+                                    </h5>
+                                </span> <b class="caret"></b>
+                            </a>
+                            <ul class="collapse" id="category" data-parent="#sidebar-menu">
+                                <div class="sub-menu">
+                                    <li>
+                                        <a class="sidenav-item-link" href="{{route('companies.index')}}">
+                                            <span class="nav-text">List</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="sidenav-item-link" href="{{route('companies.create')}}">
+                                            <span class="nav-text">Create</span>
+
+                                        </a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
+
+
+
+                    </ul>
+                </div>
+        </aside>
+
+        <!-- ====================================
+      ——— PAGE WRAPPER
+      ===================================== -->
+        <div class="page-wrapper">
+            <!-- Header -->
+            <header class="main-header" id="header">
+                <nav class="navbar navbar-expand-lg navbar-light" id="navbar">
+                    <!-- Sidebar toggle button -->
+                    <button id="sidebar-toggler" class="sidebar-toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                    </button>
+                    @php
+                        $segment = request()->segment(1);
+                        $title = Str::singular($segment);
+                    @endphp
+                    <span class="page-title">{{ $title ?? '' }}</span>
+                    <div class="navbar-right ">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown user-menu">
+                                <button class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                    <img src="{{ asset('assets/theme/images/default_image.png') }}"
+                                        class="user-image rounded-circle" alt="User Image" />
+                                    <span
+                                        class="d-none d-lg-inline-block">{{ ucfirst(Auth::user()->name ?? '') }}</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+
+                                    <li class="dropdown-footer">
+                                        <a id="logout" class="dropdown-link-item" href="{{ route('logout') }}">
+                                            <i class="mdi mdi-logout"></i> Log Out </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
-                </header>
-            @endif
+                </nav>
+            </header>
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            <!-- ====================================
+        ——— CONTENT WRAPPER
+        ===================================== -->
+            <div class="content-wrapper">
+                <div class="content">
+                    @yield('content')
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer mt-auto">
+                <div class="copyright bg-white">
+                    <p>
+                        &copy; <span id="copy-year"></span> Copyright Mono Dashboard Bootstrap Template by <a
+                            class="text-primary" href="http://www.iamabdus.com/" target="_blank">Abdus</a>.
+                    </p>
+                </div>
+                <script>
+                    var d = new Date();
+                    var year = d.getFullYear();
+                    document.getElementById("copy-year").innerHTML = year;
+                </script>
+            </footer>
+
         </div>
+    </div>
 
-        @stack('modals')
 
-        @livewireScripts
-    </body>
+    <script src="{{ asset('assets/theme/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ asset('assets/theme/https://unpkg.com/hotkeys-js/dist/hotkeys.min.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/apexcharts/apexcharts.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/daterangepicker/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('input[name="dateRange"]').daterangepicker({
+                autoUpdateInput: false,
+                singleDatePicker: true,
+                locale: {
+                    cancelLabel: 'Clear'
+                }
+            });
+            jQuery('input[name="dateRange"]').on('apply.daterangepicker', function(ev, picker) {
+                jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+            });
+            jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function(ev, picker) {
+                jQuery(this).val('');
+            });
+        });
+    </script>
+    <script src="{{ asset('assets/theme/https://cdn.quilljs.com/1.3.6/quill.js') }}"></script>
+    <script src="{{ asset('assets/theme/plugins/toaster/toastr.min.js') }}"></script>
+    <script src="{{ asset('assets/theme/js/mono.js') }}"></script>
+    <script src="{{ asset('assets/theme/js/chart.js') }}"></script>
+    <script src="{{ asset('assets/theme/js/map.js') }}"></script>
+    <script src="{{ asset('assets/theme/js/custom.js') }}"></script>
+    <script src="{{ asset('assets/theme/js/custom-js/action-button.js') }}"></script>
+    <script src="{{ asset('assets/theme/js/custom-js/copy-data.js') }}"></script>
+    <script>
+        const logout = document.querySelector('#logout');
+        if (logout) {
+            logout.addEventListener('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "{{ route('logout') }}",
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        window.location.href = "{{ url('/') }}";
+                    },
+                    error: function(xhr) {
+                        alert('Logout failed. Please try again.');
+                    }
+                });
+            });
+        }
+    </script>
+    <script>
+        toastr.options = {
+            closeButton: true,
+            debug: false,
+            newestOnTop: true,
+            progressBar: true,
+            positionClass: 'toast-bottom-center',
+            preventDuplicates: false,
+            showDuration: 100,
+            hideDuration: 1000,
+            timeOut: 5000,
+            extendedTimeOut: 1000,
+            showEasing: 'swing',
+            hideEasing: 'linear',
+            showMethod: 'fadeIn',
+            hideMethod: 'fadeOut'
+        };
+    </script>
+    <script>
+        @if (session('success'))
+            toastr.success("{{ session('success') }}", "Success");
+        @endif
+
+        @if (session('error'))
+            toastr.error("{{ session('error') }}", "Error");
+        @endif
+
+        @if (session('warning'))
+            toastr.warning("{{ session('warning') }}", "Warning");
+        @endif
+
+        @if (session('info'))
+            toastr.info("{{ session('info') }}", "Info");
+        @endif
+    </script>
+</body>
+
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{{-- <x-app-layout>
+ <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <x-welcome />
+            </div>
+        </div>
+    </div>
+</x-app-layout> --}}

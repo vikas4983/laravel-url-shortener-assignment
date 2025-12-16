@@ -1,4 +1,4 @@
-@extends('layouts.main-app')
+@extends('layouts.app')
 
 @section('title', 'Create Company')
 
