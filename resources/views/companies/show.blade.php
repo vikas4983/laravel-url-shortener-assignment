@@ -1,37 +1,39 @@
-@extends('layouts.main-app')
-
-@section('title', 'Create Company')
-
+@extends('layouts.app')
+@section('title', 'Show Company')
 @section('content')
-
-    <x-breadcrumb-component :home-route="['name' => 'Home', 'url' => route('dashboard')]" :parent-route="['name' => 'Companies', 'url' => route('companies.index')]" :current-route="['name' => 'Create', 'url' => null]" />
-    @include('alerts.alert')
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6">
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-
-                            <th scope="col">Name</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ $company?->name }}</td>
-                            <td>
-                                <a href="{{ route('companies.show', $company->id) }}" class="btn btn-primary">Show</a>
-                                <a href="{{ route('companies.edit', $company->id) }}" class="btn btn-info">Edit</a>
-                                <a href="{{ route('companies.destroy', $company->id) }}" class="btn btn-danger">Delete</a>
-                            </td>
-                        </tr>
-
-
-                    </tbody>
-                </table>
-            </div>
+    <x-breadcrumb-component :home-route="['name' => 'Home', 'url' => route('dashboard')]" :parent-route="['name' => 'companies', 'url' => route('companies.index')]" :current-route="['name' => 'Edit', 'url' => null]" />
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <a href="{{ route('companies.create') }}" class="btn btn-info">
+                Add Company
+            </a>
         </div>
     </div>
-
+    <table class="table" id="productsTable" style="width:100%">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Company Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <div class="text-center">
+            <span id="copyData" style="color: rgb(30, 9, 218)"></span>
+        </div>
+        <tbody>
+            <tr>
+                <td>{{ $company->id }}</td>
+                <td>
+                    {{ Str::limit($company->name, 25) }}
+                </td>
+                <td>
+                    <div class="d-flex gap-3">
+                        <x-buttons.show-button-component :route="route('companies.show', $company->id)" />
+                        <x-buttons.edit-button-component :route="route('companies.edit', $company->id)" />
+                        <x-buttons.delete-button-component :route="route('companies.destroy', $company->id)" />
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 @endsection
