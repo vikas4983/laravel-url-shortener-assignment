@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Company;
+use App\Models\Invitation;
 use App\Policies\CompanyPolicy;
+use App\Policies\InvitationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -15,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Company::class => CompanyPolicy::class,
+        Invitation::class => InvitationPolicy::class
     ];
 
     /**
@@ -23,5 +27,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+        Gate::define('invite-create-view', function ($user) {
+            return $user->hasAnyRole(['SuperAdmin', 'Admin']);
+        });
     }
 }

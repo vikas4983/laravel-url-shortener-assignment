@@ -9,11 +9,11 @@
             </a>
         </div>
         @can('viewCreate', App\Models\Invitation::class)
-        <div class="d-flex align-items-center">
-            <a href="{{ route('invitations.create') }}" class="btn btn-info">
-                Invitation
-            </a>
-        </div>
+            <div class="d-flex align-items-center">
+                <a href="{{ route('invitations.create') }}" class="btn btn-info">
+                    Invitation
+                </a>
+            </div>
         @endcan
 
     </div>
@@ -21,7 +21,11 @@
         <thead>
             <tr>
                 <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Invited By</th>
                 <th>Company Name</th>
+                <th>Role</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -29,20 +33,32 @@
             <span id="copyData" style="color: rgb(30, 9, 218)"></span>
         </div>
         <tbody>
-            @if ($companies->count() > 0)
-                @foreach ($companies as $index => $company)
+            @if ($invitations->count() > 0)
+                @foreach ($invitations as $index => $invitation)
                     <tr class="viewData">
                         <td>{{ $index + 1 }}</td>
                         <td>
-                            {{ Str::limit($company->name ?? '', 25) }}
+                            {{ $invitation->name }}
+                        </td>
+                        <td>
+                            {{ $invitation->email }}
+                        </td>
+                        <td>
+                            {{ $invitation->company->name }}
+                        </td>
+                        <td>
+                            {{ $invitation->role->name }}
+                        </td>
+                        <td>
+                            {{ $invitation->status }}
                         </td>
                         <td>
                             <div class="d-flex gap-3">
-                                <x-buttons.show-button-component :route="route('companies.show', $company->id)" />
+                                <x-buttons.show-button-component :route="route('invitations.show', $invitation->id)" />
 
-                                <x-buttons.edit-button-component :route="route('companies.edit', $company->id)" />
+                                <x-buttons.edit-button-component :route="route('invitations.edit', $invitation->id)" />
 
-                                <x-buttons.delete-button-component :route="route('companies.destroy', $company->id)" />
+                                <x-buttons.delete-button-component :route="route('invitations.destroy', $invitation->id)" />
 
 
                             </div>
@@ -59,7 +75,7 @@
         </tbody>
     </table>
     <div class="d-flex justify-content-center mt-5">
-        {{ $companies->links() }}
+        {{ $invitations->links() }}
     </div>
     <script>
         @if (session('success'))
