@@ -13,7 +13,6 @@ class ShortUrlPolicy
      */
     public function visibleCompanies(User $user)
     {
-
         if ($user->hasRole('Admin')) {
             return 'OWN';
         }
@@ -25,20 +24,16 @@ class ShortUrlPolicy
     }
     public function view(User $user)
     {
-
         if ($user->hasRole('SuperAdmin')) {
             return ShortUrl::paginate(5);
         }
         if ($user->hasRole('Admin') || $user->hasRole('Member')) {
             return ShortUrl::where('user_id', $user->id)->paginate(5);
         }
-       
     }
     protected function isAdminRole(int $roleId): bool
     {
-        return Role::where('id', $roleId)
-            ->where('name', 'Admin')
-            ->exists();
+        return Role::where('id', $roleId)->where('name', 'Admin')->exists();
     }
     protected function isAdminOrMemberRole(int $roleId): bool
     {

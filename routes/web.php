@@ -11,9 +11,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/register', function () {
-    return redirect()
-        ->route('login')
-        ->with('error', 'Registration not allowed, Please login or contact to admin');
+    return redirect()->route('login')->with('error', 'Registration not allowed, Please login or contact to admin');
 })->name('register');
 
 Route::middleware(['auth'])->group(function () {

@@ -20,20 +20,22 @@
         @endif
 
         <!-- Second box -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-default bg-success">
-                <div class="d-flex p-5">
-                    <div class="icon-md bg-white rounded-circle mr-3">
-                        <i class="mdi mdi-email-check text-success"></i>
-                    </div>
-                    <div class="text-left">
-                        <span
-                            class="h2 d-block text-white">{{ \App\Models\Invitation::where('invited_by', auth()->id())->count() ?? '0' }}</span>
-                        <p class="text-white">Invitations</p>
+        @if ((auth()->check() && auth()->user()->hasRole('SuperAdmin')) || auth()->user()->hasRole('Admin'))
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-default bg-success">
+                    <div class="d-flex p-5">
+                        <div class="icon-md bg-white rounded-circle mr-3">
+                            <i class="mdi mdi-email-check text-success"></i>
+                        </div>
+                        <div class="text-left">
+                            <span
+                                class="h2 d-block text-white">{{ \App\Models\Invitation::where('invited_by', auth()->id())->count() ?? '0' }}</span>
+                            <p class="text-white">Invitations</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
 
         <!-- Third box -->
         <div class="col-xl-3 col-md-6">
@@ -44,11 +46,18 @@
                     </div>
                     <div class="text-left">
                         <span class="h2 d-block text-white">
-                            {{ \App\Models\shortUrl::where('user_id', auth()->id())->count() ?? '0' }}</span>
+                            @if (auth()->check() && auth()->user()->hasRole('SuperAdmin'))
+                                {{ \App\Models\shortUrl::count() }}
+                            @endif
+                            @if ((auth()->check() && auth()->user()->hasRole('Admin')) || auth()->user()->hasRole('Member'))
+                                {{ \App\Models\shortUrl::where('user_id', auth()->id())->count() ?? '0' }}
+                            @endif
+                           
+                        </span>
                         <p class="text-white">Short-Ulrs</p>
                     </div>
                 </div>
             </div>
         </div>
- </div>
+    </div>
 @endsection

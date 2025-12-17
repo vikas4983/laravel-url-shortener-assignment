@@ -17,7 +17,7 @@ use ParagonIE\ConstantTime\Base64;
 
 class ShortUrlController extends Controller
 {
-    protected  $staticData;
+    protected $staticData;
     public function __construct(StaticDataService $staticData)
     {
         return $this->staticData = $staticData;
@@ -26,7 +26,7 @@ class ShortUrlController extends Controller
     {
         $user = auth()->user();
         $policy = app(ShortUrlPolicy::class);
-        $shortUrls =  $policy->view($user);
+        $shortUrls = $policy->view($user);
         return view('shorturls.index', compact('shortUrls'));
     }
     public function craete()
@@ -43,15 +43,11 @@ class ShortUrlController extends Controller
 
         //  Companies for Admin
         if ($policy->visibleCompanies($user) === 'OWN') {
-            $response['companies'] = $staticData['companies']
-                ->where('id', $user->company_id)
-                ->values();
+            $response['companies'] = $staticData['companies']->where('id', $user->company_id)->values();
         }
         //  Companies for Member
         if ($policy->visibleCompanies($user) === 'OWN') {
-            $response['companies'] = $staticData['companies']
-                ->where('id', $user->company_id)
-                ->values();
+            $response['companies'] = $staticData['companies']->where('id', $user->company_id)->values();
         }
 
         return view('shorturls.create', ['staticData' => $response]);
@@ -61,23 +57,20 @@ class ShortUrlController extends Controller
         $validatedData = $request->validated();
         $exists = ShortUrl::where('original_url', $validatedData['original_url'])->first();
         if (!$exists) {
-            $shortUrl =  ShortUrl::create([
+            $shortUrl = ShortUrl::create([
                 'original_url' => $validatedData['original_url'],
                 'user_id' => auth()->id(),
                 'company_id' => $validatedData['company_id'],
             ]);
             $encoded_string = base64_encode($shortUrl->id);
             $shortUrl->update([
-                'short_code' => $encoded_string
+                'short_code' => $encoded_string,
             ]);
             $staticData = $this->staticData->getData();
             return redirect()->route('shortUrls.index')->with('success', 'ShortUrl created successfully');
-        }else{
+        } else {
             return redirect()->route('shortUrls.index')->with('error', 'ShortUrl already created ');
         }
     }
-    public function redirect(Request $request)
-    {
-        dd($request->all());
-    }
+    
 }

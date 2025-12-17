@@ -8,7 +8,6 @@ class InviteUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-
         return true;
     }
 
@@ -16,9 +15,9 @@ class InviteUserRequest extends FormRequest
     {
         return [
             'company_id' => 'required|exists:companies,id',
-            'name'       => 'required|string',
-            'email'      => 'required|email|unique:users,email|unique:invitations,email',
-            'role_id'    => 'required|exists:roles,id',
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email|unique:invitations,email',
+            'role_id' => 'required|exists:roles,id',
         ];
     }
 
@@ -26,10 +25,9 @@ class InviteUserRequest extends FormRequest
     {
         return [
             'company_id.required' => 'Company is required',
-            'company_id.exists'   => 'Selected company is invalid',
-            'email.unique'        => 'This email is already invited or registered',
+            'company_id.exists' => 'Selected company is invalid',
+            'email.unique' => 'This email is already invited or registered',
             'role_id.required' => 'Company is required',
-
         ];
     }
 }

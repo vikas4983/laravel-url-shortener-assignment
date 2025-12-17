@@ -6,14 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invitation extends Model
 {
-    protected $fillable = [
-        'company_id',
-        'invited_by',
-        'role_id',
-        'name',
-        'email',
-        'status'
-    ];
+    protected $fillable = ['company_id', 'invited_by', 'role_id', 'name', 'email', 'status'];
 
     public function role()
     {

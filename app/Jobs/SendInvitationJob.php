@@ -17,7 +17,7 @@ class SendInvitationJob implements ShouldQueue
     public $invite;
     public function __construct($invite)
     {
-        $this->invite=$invite;
+        $this->invite = $invite;
     }
 
     /**
@@ -25,6 +25,6 @@ class SendInvitationJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->invite->email)->send(new InvitationMail($this->invite) );
+        Mail::to($this->invite->email)->send(new InvitationMail($this->invite));
     }
 }

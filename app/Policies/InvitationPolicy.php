@@ -9,10 +9,9 @@ use App\Traits\RoleTrait;
 
 class InvitationPolicy
 {
-    use RoleTrait;
+    
     public function viewCreate(User $user): bool
     {
-
         return $user->hasAnyRole(['SuperAdmin', 'Admin']);
     }
     public function visibleRoles(User $user): array
@@ -39,37 +38,35 @@ class InvitationPolicy
         if ($user->hasRole('Admin')) {
             return 'OWN';
         }
+        if ($user->hasRole('Member')) {
+            return 'OWN';
+        }
 
         return 'NONE';
     }
 
-
     public function create(User $user, int $companyId, int $roleId): bool
     {
-
         if ($user->hasRole('SuperAdmin')) {
             return $this->isAdminRole($roleId);
         }
 
         // Admin
         if ($user->hasRole('Admin')) {
-
             // Invite only from same company
             if ($user->company_id !== $companyId) {
                 return false;
             }
 
             // admin invite admin and membar
-            return  $this->isAdminOrMemberRole($roleId);
+            return $this->isAdminOrMemberRole($roleId);
         }
 
         return false;
     }
     protected function isAdminRole(int $roleId): bool
     {
-        return Role::where('id', $roleId)
-            ->where('name', 'Admin')
-            ->exists();
+        return Role::where('id', $roleId)->where('name', 'Admin')->exists();
     }
     protected function isAdminOrMemberRole(int $roleId): bool
     {
@@ -80,7 +77,6 @@ class InvitationPolicy
 
     public function view(User $user)
     {
-
         if ($user->hasRole('SuperAdmin')) {
             return Invitation::paginate(5);
         }

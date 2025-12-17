@@ -53,13 +53,7 @@
                                             ✅ Accept Invitation
                                         </button>
                                         <!-- REJECT FORM -->
-                                        <button type="submit"
-                                            style="background:#dc2626;color:#fff;
-                                                border:none;padding:12px 26px;
-                                                border-radius:6px;font-size:15px;
-                                                cursor:pointer;">
-                                            ❌ Reject Invitation
-                                        </button>
+                                        
                                     </td>
                                 </tr>
                             </table>

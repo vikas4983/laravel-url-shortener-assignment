@@ -21,8 +21,7 @@ use Illuminate\Support\Facades\Log;
 class InvitationController extends Controller
 {
     use AuthorizesRequests;
-    use RoleTrait;
-    protected  $staticData;
+    protected $staticData;
     public function __construct(StaticDataService $staticData)
     {
         return $this->staticData = $staticData;
@@ -34,7 +33,7 @@ class InvitationController extends Controller
     {
         $user = auth()->user();
         $policy = app(InvitationPolicy::class);
-        $invitations =  $policy->view($user);
+        $invitations = $policy->view($user);
 
         return view('invitations.index', compact('invitations'));
     }
@@ -48,14 +47,12 @@ class InvitationController extends Controller
         $policy = app(InvitationPolicy::class);
         $staticData = $this->staticData->getData();
         $response = [
-            'roles'     => collect(),
+            'roles' => collect(),
             'companies' => collect(),
         ];
         $allowedRoles = $policy->visibleRoles($user);
         if (!empty($allowedRoles)) {
-            $response['roles'] = $staticData['roles']
-                ->whereIn('name', $allowedRoles)
-                ->values();
+            $response['roles'] = $staticData['roles']->whereIn('name', $allowedRoles)->values();
         }
         // Companies for SuperAdmin
         if ($policy->visibleCompanies($user) === 'ALL') {
@@ -63,9 +60,7 @@ class InvitationController extends Controller
         }
         // Companies for Admin
         if ($policy->visibleCompanies($user) === 'OWN') {
-            $response['companies'] = $staticData['companies']
-                ->where('id', $user->company_id)
-                ->values();
+            $response['companies'] = $staticData['companies']->where('id', $user->company_id)->values();
         }
         return view('invitations.create', ['staticData' => $response]);
     }
@@ -77,46 +72,33 @@ class InvitationController extends Controller
     {
         $validatedData = $request->validated();
         $roleId = (int) $validatedData['role_id'];
-        if (! Gate::allows('create', [
-            Invitation::class,
-            $validatedData['company_id'],
-            $roleId
-        ])) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'You are not authorized to invite this user');
+        if (!Gate::allows('create', [Invitation::class, $validatedData['company_id'], $roleId])) {
+            return redirect()->back()->withInput()->with('error', 'You are not authorized to invite this user');
         }
 
         DB::beginTransaction();
 
         try {
-            $invite =  Invitation::create([
+            $invite = Invitation::create([
                 'company_id' => $validatedData['company_id'],
                 'invited_by' => auth()->id(),
-                'role_id'    => $roleId,
-                'name'       => $validatedData['name'],
-                'email'      => $validatedData['email'],
+                'role_id' => $roleId,
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
             ]);
             SendInvitationJob::dispatch($invite);
-            return redirect()
-                ->back()
-                ->with('success', 'Invitation sent successfully');
             DB::commit();
+            return redirect()->back()->with('success', 'Invitation sent successfully');
         } catch (\Throwable $e) {
             DB::rollBack();
 
             Log::error('Invitation transaction failed', [
                 'invite' => $invite ?? null,
-                'error'  => $e->getMessage(),
-                'trace'  => $e->getTraceAsString(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()
-                ->back()
-                ->with('error', 'Something went wrong. Please try again.');
+            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
         }
     }
-
-    
 }

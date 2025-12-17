@@ -27,11 +27,7 @@
                     {{ Str::limit($company->name, 25) }}
                 </td>
                 <td>
-                    <div class="d-flex gap-3">
-                        <x-buttons.show-button-component :route="route('companies.show', $company->id)" />
-                        <x-buttons.edit-button-component :route="route('companies.edit', $company->id)" />
-                        <x-buttons.delete-button-component :route="route('companies.destroy', $company->id)" />
-                    </div>
+
                 </td>
             </tr>
         </tbody>

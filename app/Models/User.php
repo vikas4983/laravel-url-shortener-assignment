@@ -25,33 +25,21 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'company_id',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'company_id'];
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
-    ];
+    protected $hidden = ['password', 'remember_token', 'two_factor_recovery_codes', 'two_factor_secret'];
 
     /**
      * The accessors to append to the model's array form.
      *
      * @var array<int, string>
      */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+    protected $appends = ['profile_photo_url'];
 
     /**
      * Get the attributes that should be cast.
@@ -79,9 +67,8 @@ class User extends Authenticatable
         return $this->roles()->whereIn('name', $roles)->exists();
     }
 
-    public function company(){
+    public function company()
+    {
         return $this->belongsTo(Company::class, 'company_id', 'id');
     }
-
-   
 }

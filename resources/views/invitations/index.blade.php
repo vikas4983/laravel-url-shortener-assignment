@@ -23,7 +23,7 @@
         </thead>
 
         <tbody>
-            @if ($invitations->count() > 0)
+            @if ($invitations && $invitations->count() > 0)
                 @foreach ($invitations as $index => $invitation)
                     <tr class="viewData">
                         <td>{{ $index + 1 }}</td>
@@ -55,7 +55,7 @@
         </tbody>
     </table>
     <div class="d-flex justify-content-center mt-5">
-        {{ $invitations->links() }}
+        {{ $invitations && $invitations->links() }}
     </div>
     <script>
         @if (session('success'))

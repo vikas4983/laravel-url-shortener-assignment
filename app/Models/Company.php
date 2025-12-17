@@ -11,7 +11,6 @@ class Company extends Model
     {
         return $this->hasMany(User::class);
     }
-
     public function scopeName($query)
     {
         return $query;

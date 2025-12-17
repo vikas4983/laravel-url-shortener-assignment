@@ -1,147 +1,184 @@
-# URL Shortener Service (Laravel)
+# Laravel URL Shortener Assignment
 
-This project is a multi-tenant URL Shortener service built using Laravel.
-It supports multiple companies, role-based access control, and public URL redirection.
-Each company can manage its own users and short URLs, with strict access rules based on roles.
+## Project Overview
+This project is a **role-based URL Shortener system** built using **Laravel 12**.
+It demonstrates authentication, authorization, invitation management, and secure URL handling based on roles and
+companies.
 
-# Key Features
+---
 
-Multi-company (tenant-based) architecture
-Role-based authentication & authorization
-Invitation system for Admins and Members
-Secure URL shortening
-Public short URL redirection
-Fully test-covered critical flows
+## Tech Stack
+- Framework: Laravel 12
+- PHP Version: 8.2.12
+- Database: MySQL (Version 5.2)
+- UI Theme: Mono Bootstrap
+https://themefisher.com/demo?theme=mono-bootstrap
+- Mail Service: Gmail SMTP
 
-# Tech Stack
+---
 
-Layer Technology
-Backend PHP 8.x
-Framework Laravel 10 / 11 / 12
-Database MySQL / SQLite
-Auth Laravel Authentication
-ORM Eloquent
-Testing PHPUnit
-Version Control Git
+## Project Setup (Step by Step)
 
-# User Roles & Permissions
+### 1. Clone the Project
+```bash
+git clone https://github.com/vikas4983/laravel-url-shortener-assignment.git
+cd laravel-url-shortener-assignment
+```
 
-1. SuperAdmin
+### 2. Install Dependencies
+```bash
+composer install
+```
 
-Can create companies
-Can invite Admin users to any company
-Can view all short URLs across all companies
-Cannot create short URLs
+### 3. Create Environment File
+```bash
+cp .env.example .env
+```
 
-2. Admin
+### 4. Generate Application Key
+```bash
+php artisan key:generate
+```
 
-Belongs to one company
-Can invite Admin or Member to their own company
-Can create short URLs
-Can view all URLs created inside their company
+### 5. Configure Environment Variables
 
-3. Member
+#### Mail Configuration
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=465
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_email_password
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS="your_email@gmail.com"
+MAIL_FROM_NAME="URL-SHORTNER"
+```
 
-Belongs to one company
-Can create short URLs
-Can view only URLs created by themselves
-
-# Authentication & Authorization
-
-Email + password based authentication
-Role-based access control enforced via:
-Middleware
-Policies
-Only authorized users can access restricted endpoints
-
-# Invitation Flow
-
-1. SuperAdmin
-   Invites Admin to create a new company
-
-2. Admin
-   Invites Admin or Member within their own company
-
-# URL Shortener Rules
-
-1. SuperAdmin Can not Create but can see all URL Shortener.
-2. Admin Can Create and can see all own URL Shortener.
-3. Member Can Create and can see all own URL Shortener.
-
-# Public Access
-
-All short URLs are publicly accessible
-Short URL redirects to the original URL
-
-# Database Design (High-Level)
-
-1. companies
-2. users
-3. role_user (pivot)
-4. companies
-5. short_urls
-6. invitations
-   All relationships are managed via Eloquent ORM.
-
-# Testing Strategy
-
-The following test cases are covered using PHPUnit:
-
-1. Authentication Tests
-   Login / Logout
-   Role-based access restrictions
-2. Authorization Tests
-   Admin access limited to own company
-   Member access limited to own URLs
-   SuperAdmin access across companies
-3. URL Tests
-   Admin & Member can create short URLs
-   SuperAdmin cannot create short URLs
-   Public short URL redirects correctly
-4. Invitation Tests
-   Valid invitation acceptance
-   Invalid or expired token rejection
-
-# Installation & Setup
-
-1. Clone Repository
-   git clone https://github.com/your-username/url-shortener.git
-   cd url-shortener
-
-2. Install Dependencies
-   composer install
-   composer global require laravel/installer 
-
-3. Environment Setup
-   cp .env.example .env
-   php artisan key:generate
-
-4. Database Configuration
-
-Update .env with database credentials:
-
+#### Database Configuration
+```env
 DB_CONNECTION=mysql
-DB_DATABASE=url_shortener
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sembark
 DB_USERNAME=root
 DB_PASSWORD=
+```
 
-5️⃣ Run Migrations & Seeders
-php artisan migrate --seed
+### 6. Create Database
+Create a database manually in phpMyAdmin:
 
-Seeder will create:
+Database Name: sembark
 
-SuperAdmin account
+### 7. Run Migrations
+```bash
+php artisan migrate
+```
 
-Default roles
+### 8. Run Seeders
+```bash
+php artisan db:seed
+```
 
-6️⃣ Run Server
+---
+## Assumptions & Design Decisions
+
+The following assumptions were made while implementing this assignment:
+
+### Invitation Handling Assumptions
+
+1. When an **Admin or SuperAdmin** sends an invitation, a record is created in the `invitations` table with:
+- `email`
+- `company_id`
+- `role_id`
+- `invited_id`
+- `token`
+- `status = pending`
+
+2. The invited user receives an **email invitation** containing a secure token-based link.
+
+3. **Accept Invitation Flow**
+- User clicks on the **Accept** button from the email
+- User is redirected to a **account setup form**
+- User account is created (or activated)
+- Password is securely stored using Laravel hashing
+- Invitation status is updated to **accepted**
+- Invitation token becomes invalid
+
+4. **Reject Invitation Flow**
+- User clicks on the **Reject** button from the email
+- No user account is created or activated
+- Invitation status is updated to **rejected**
+- Invitation token becomes invalid
+
+5. Each invitation link can be used **only once**.
+6. Expired, already accepted, or rejected invitations are not allowed to be reused.
+
+---
+
+### Seeder Data Assumptions
+
+1. Users are inserted using Laravel seeders **only for development and testing purposes**.
+2. The following users are created via seeders:
+- One **SuperAdminSeeder**
+- One **UserSeeder** (assigned to a demo company)
+3. Seeder credentials are documented in the README for easy testing.
+4. In a real production system, users should be onboarded **only via the invitation process**.
+
+---
+
+### General Assumptions
+
+- UI is kept minimal to focus on backend logic as per assignment expectations
+- Security and role-based authorization are prioritized over UI features
+- Laravel best practices are followed throughout the implementation
+
+## Default Login Credentials
+
+### Super Admin
+Email: superadmin@sembark.com
+Password: superadmin
+
+### Admin
+Email: admin@sembark.com
+Password: adminadmin
+
+### Member
+Email: member@sembark.com
+Password: membermember
+
+---
+
+## Roles & Authorization
+Roles implemented:
+- SuperAdmin
+- Admin
+- Member
+
+
+Authorization handled using Laravel Gates & Policies.
+
+---
+
+## Invitation Rules
+- SuperAdmin can invite an Admin in a new company
+- Admin can invite Admin or Member in their own company
+- Members cannot invite users
+
+---
+
+## URL Shortener Rules
+- SuperAdmin cannot create short URLs
+- Admin and Member can create short URLs
+- SuperAdmin can see all company URLs
+- Admin can see URLs created in their own company
+- Member can see URLs created by themselves
+- URLs are private and not publicly resolvable
+
+---
+
+## Run the Project
+```bash
 php artisan serve
+```
 
-🔑 Default SuperAdmin Credentials
-Email: superadmin@example.com
-Password: password
-
-(Change immediately after first login)
-
-🧪 Run Tests
-php artisan test
+Visit: http://127.0.0.1:8000

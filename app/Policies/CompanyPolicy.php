@@ -53,7 +53,6 @@ class CompanyPolicy
         return $user->hasRole('SuperAdmin');
     }
 
-
     /**
      * Determine whether the user can restore the model.
      */

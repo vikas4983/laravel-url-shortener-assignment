@@ -7,7 +7,6 @@ use App\Models\Role;
 
 class StaticDataService
 {
-
     public function getData()
     {
         $staticData = [

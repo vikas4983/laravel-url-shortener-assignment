@@ -24,12 +24,7 @@ class CompanyCreateRequest extends FormRequest
     {
         $companyId = $this->route('company');
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('companies', 'name')->ignore($companyId),
-            ],
+            'name' => ['required', 'string', 'max:50', Rule::unique('companies', 'name')->ignore($companyId)],
         ];
     }
 
@@ -37,9 +32,9 @@ class CompanyCreateRequest extends FormRequest
     {
         return [
             'name.required' => 'Company name is required.',
-            'name.string'   => 'Company name must be a valid string.',
-            'name.max'      => 'Company name must not exceed 50 characters.',
-            'name.unique'   => 'This company name already exists.',
+            'name.string' => 'Company name must be a valid string.',
+            'name.max' => 'Company name must not exceed 50 characters.',
+            'name.unique' => 'This company name already exists.',
         ];
     }
 }

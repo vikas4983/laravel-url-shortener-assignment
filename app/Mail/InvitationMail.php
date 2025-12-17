@@ -13,7 +13,7 @@ class InvitationMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public  $invite;
+    public $invite;
 
     /**
      * Create a new message instance.
@@ -28,9 +28,7 @@ class InvitationMail extends Mailable implements ShouldQueue
      */
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: 'You have received an invitation'
-        );
+        return new Envelope(subject: 'You have received an invitation');
     }
 
     /**

@@ -59,7 +59,7 @@
                 <!-- Aplication Brand -->
                 <div class="app-brand">
                     <a href="{{ route('dashboard') }}">
-                       <span class="brand-name">{{Auth::user()->company->name ?? 'SuperAdmin'}}</span>
+                        <span class="brand-name">{{ Auth::user()->company->name ?? 'SuperAdmin' }}</span>
                     </a>
                 </div>
                 <!-- begin sidebar scrollbar -->
@@ -89,32 +89,34 @@
 
                             </li>
                         @endif
-
-                        <li class="has-sub">
-                            <a class="sidenav-item-link" href="{{ route('invitations.index') }}" aria-expanded="false"
-                                aria-controls="invitation">
-                                <i class="mdi mdi mdi-office-building"></i>
-                                <span class="nav-text">Invitation <h5 class="badge badge-primary badge-pill">
-                                        {{ \App\Models\Invitation::where('invited_by', auth()->id())->count() ?? '0' }}
-                                    </h5>
-                                </span>
-                                <b class="caret"></b>
-                            </a>
-                        </li>
+                        @if ((auth()->check() && auth()->user()->hasRole('SuperAdmin')) || auth()->user()->hasRole('Admin'))
+                            <li class="has-sub">
+                                <a class="sidenav-item-link" href="{{ route('invitations.index') }}"
+                                    aria-expanded="false" aria-controls="invitation">
+                                    <i class="mdi mdi mdi-office-building"></i>
+                                    <span class="nav-text">Invitation <h5 class="badge badge-primary badge-pill">
+                                            {{ \App\Models\Invitation::where('invited_by', auth()->id())->count() ?? '0' }}
+                                        </h5>
+                                    </span>
+                                    <b class="caret"></b>
+                                </a>
+                            </li>
+                        @endif
                         <li class="has-sub">
                             <a class="sidenav-item-link" href="{{ route('shortUrls.index') }}" aria-expanded="false"
                                 aria-controls="url-shortner">
                                 <i class="mdi mdi mdi-office-building"></i>
                                 <span class="nav-text">Short-Urls <h5 class="badge badge-primary badge-pill">
-                                        {{ \App\Models\shortUrl::where('user_id', auth()->id())->count() ?? '0' }}
+                                        @if (auth()->check() && auth()->user()->hasRole('SuperAdmin'))
+                                            {{ \App\Models\shortUrl::count() }}
+                                        @endif
+                                        @if ((auth()->check() && auth()->user()->hasRole('Admin')) || auth()->user()->hasRole('Member'))
+                                            {{ \App\Models\shortUrl::where('user_id', auth()->id())->count() ?? '0' }}
+                                        @endif
                                     </h5>
                                 </span> <b class="caret"></b>
                             </a>
-
                         </li>
-
-
-
                     </ul>
                 </div>
         </aside>
@@ -220,7 +222,7 @@
     <script src="{{ asset('assets/theme/js/chart.js') }}"></script>
     <script src="{{ asset('assets/theme/js/map.js') }}"></script>
     <script src="{{ asset('assets/theme/js/custom.js') }}"></script>
-    
+
     <script>
         const logout = document.querySelector('#logout');
         if (logout) {

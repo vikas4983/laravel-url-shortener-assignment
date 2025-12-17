@@ -3,7 +3,7 @@
 @section('content')
     <x-breadcrumb-component :home-route="['name' => 'Home', 'url' => route('dashboard')]" :current-route="['name' => 'List', 'url' => null]" class="mb-5" />
     <div class="d-flex justify-content-between align-items-center">
-       @if (auth()->check() && auth()->user()->hasRole('Admin'))
+        @if (auth()->check() && auth()->user()->hasRole('Admin'))
             <div class="d-flex align-items-center">
                 <a href="{{ route('shortUrls.create') }}" class="btn btn-info">
                     Generate ShortUrl
@@ -28,7 +28,7 @@
             </tr>
         </thead>
         <tbody>
-            @if ($shortUrls->count() > 0)
+            @if ($shortUrls && $shortUrls->count() > 0)
                 @foreach ($shortUrls as $index => $shortUrl)
                     <tr class="viewData">
                         <td>{{ $index + 1 }}</td>
@@ -48,14 +48,14 @@
             @else
                 <tr>
                     <td colspan="5" class="text-center text-danger py-3">
-                        <h2 style="color: rgb(226, 15, 15)">Data not available</h2>
+                        <h3>Data not available</h3>
                     </td>
                 </tr>
             @endif
         </tbody>
     </table>
     <div class="d-flex justify-content-center mt-5">
-        {{ $shortUrls->links() }}
+        {{ $shortUrls && $shortUrls->links() }}
     </div>
     <script>
         @if (session('success'))

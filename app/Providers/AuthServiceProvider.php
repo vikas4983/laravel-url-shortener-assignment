@@ -18,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Company::class => CompanyPolicy::class,
-        Invitation::class => InvitationPolicy::class
+        Invitation::class => InvitationPolicy::class,
     ];
 
     /**
@@ -27,9 +27,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-       Gate::define('shortUrl-create-view', function ($user) {
+        Gate::define('shortUrl-create-view', function ($user) {
             return $user->hasAnyRole(['Admin', 'Member']);
-            
         });
     }
 }
