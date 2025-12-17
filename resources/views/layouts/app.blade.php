@@ -89,19 +89,38 @@
 
                             </li>
                         @endif
-                        @if ((auth()->check() && auth()->user()->hasRole('SuperAdmin')) || auth()->user()->hasRole('Admin'))
+                        @if (auth()->check() && auth()->user()->hasRole('SuperAdmin'))
                             <li class="has-sub">
                                 <a class="sidenav-item-link" href="{{ route('invitations.index') }}"
                                     aria-expanded="false" aria-controls="invitation">
-                                    <i class="mdi mdi mdi-office-building"></i>
-                                    <span class="nav-text">Invitation <h5 class="badge badge-primary badge-pill">
-                                            {{ \App\Models\Invitation::where('invited_by', auth()->id())->count() ?? '0' }}
+                                    <i class="mdi mdi-office-building"></i>
+                                    <span class="nav-text">
+                                        Invitation
+                                        <h5 class="badge badge-primary badge-pill">
+                                            {{ \App\Models\Invitation::count() }}
                                         </h5>
                                     </span>
                                     <b class="caret"></b>
                                 </a>
                             </li>
                         @endif
+
+                        @if (auth()->check() && auth()->user()->hasRole('Admin'))
+                            <li class="has-sub">
+                                <a class="sidenav-item-link" href="{{ route('invitations.index') }}"
+                                    aria-expanded="false" aria-controls="invitation">
+                                    <i class="mdi mdi-office-building"></i>
+                                    <span class="nav-text">
+                                        Invitation
+                                        <h5 class="badge badge-primary badge-pill">
+                                            {{ \App\Models\Invitation::where('invited_by', auth()->id())->count() }}
+                                        </h5>
+                                    </span>
+                                    <b class="caret"></b>
+                                </a>
+                            </li>
+                        @endif
+
                         <li class="has-sub">
                             <a class="sidenav-item-link" href="{{ route('shortUrls.index') }}" aria-expanded="false"
                                 aria-controls="url-shortner">

@@ -27,6 +27,7 @@ class ShortUrlController extends Controller
         $user = auth()->user();
         $policy = app(ShortUrlPolicy::class);
         $shortUrls = $policy->view($user);
+        
         return view('shorturls.index', compact('shortUrls'));
     }
     public function craete()

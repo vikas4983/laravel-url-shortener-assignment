@@ -17,7 +17,7 @@
                 <th>Email</th>
                 <th>Invited By</th>
                 <th>Company Name</th>
-                <th>Role</th>
+                <th>Status</th>
 
             </tr>
         </thead>
@@ -34,11 +34,12 @@
                             {{ $invitation->email }}
                         </td>
                         <td>
-                            {{ $invitation->company->name }}
-                        </td>
-                        <td>
                             {{ $invitation->role->name }}
                         </td>
+                        <td>
+                            {{ $invitation->company->name }}
+                        </td>
+                        
                         <td>
                             {{ $invitation->status }}
                         </td>
