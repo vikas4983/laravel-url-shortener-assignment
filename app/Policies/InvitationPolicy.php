@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Invitation;
 use App\Models\Role;
 use App\Models\User;
 use App\Traits\RoleTrait;
@@ -23,6 +24,9 @@ class InvitationPolicy
         if ($user->hasRole('Admin')) {
             return ['Admin', 'Member'];
         }
+        if ($user->hasRole('Member')) {
+            return ['Member'];
+        }
 
         return [];
     }
@@ -38,6 +42,7 @@ class InvitationPolicy
 
         return 'NONE';
     }
+
 
     public function create(User $user, int $companyId, int $roleId): bool
     {
@@ -71,5 +76,19 @@ class InvitationPolicy
         return Role::where('id', $roleId)
             ->whereIn('name', ['Admin', 'Member'])
             ->exists();
+    }
+
+    public function view(User $user)
+    {
+
+        if ($user->hasRole('SuperAdmin')) {
+            return Invitation::paginate(5);
+        }
+        if ($user->hasRole('Admin')) {
+            return Invitation::where('invited_by', $user->id)->paginate(5);
+        }
+        if ($user->hasRole('Member')) {
+            return Invitation::where('invited_by', $user->id)->paginate(5);
+        }
     }
 }

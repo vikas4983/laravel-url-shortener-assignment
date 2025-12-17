@@ -7,17 +7,17 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Mail;
 
-class SendInvitationEmailJob implements ShouldQueue
+class SendInvitationJob implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new job instance.
      */
-    public $email;
-    public function __construct($email)
+    public $invite;
+    public function __construct($invite)
     {
-        $this->email = $email;
+        $this->invite=$invite;
     }
 
     /**
@@ -25,6 +25,6 @@ class SendInvitationEmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->email)->send(new InvitationMail($this->email));
+        Mail::to($this->invite->email)->send(new InvitationMail($this->invite) );
     }
 }

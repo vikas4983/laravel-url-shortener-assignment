@@ -78,4 +78,10 @@ class User extends Authenticatable
     {
         return $this->roles()->whereIn('name', $roles)->exists();
     }
+
+    public function company(){
+        return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
+
+   
 }

@@ -1,59 +1,147 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# URL Shortener Service (Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a multi-tenant URL Shortener service built using Laravel.
+It supports multiple companies, role-based access control, and public URL redirection.
+Each company can manage its own users and short URLs, with strict access rules based on roles.
 
-## About Laravel
+# Key Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Multi-company (tenant-based) architecture
+Role-based authentication & authorization
+Invitation system for Admins and Members
+Secure URL shortening
+Public short URL redirection
+Fully test-covered critical flows
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Layer Technology
+Backend PHP 8.x
+Framework Laravel 10 / 11 / 12
+Database MySQL / SQLite
+Auth Laravel Authentication
+ORM Eloquent
+Testing PHPUnit
+Version Control Git
 
-## Learning Laravel
+# User Roles & Permissions
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+1. SuperAdmin
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Can create companies
+Can invite Admin users to any company
+Can view all short URLs across all companies
+Cannot create short URLs
 
-## Laravel Sponsors
+2. Admin
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Belongs to one company
+Can invite Admin or Member to their own company
+Can create short URLs
+Can view all URLs created inside their company
 
-### Premium Partners
+3. Member
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Belongs to one company
+Can create short URLs
+Can view only URLs created by themselves
 
-## Contributing
+# Authentication & Authorization
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Email + password based authentication
+Role-based access control enforced via:
+Middleware
+Policies
+Only authorized users can access restricted endpoints
 
-## Code of Conduct
+# Invitation Flow
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. SuperAdmin
+   Invites Admin to create a new company
 
-## Security Vulnerabilities
+2. Admin
+   Invites Admin or Member within their own company
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# URL Shortener Rules
 
-## License
+1. SuperAdmin Can not Create but can see all URL Shortener.
+2. Admin Can Create and can see all own URL Shortener.
+3. Member Can Create and can see all own URL Shortener.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Public Access
+
+All short URLs are publicly accessible
+Short URL redirects to the original URL
+
+# Database Design (High-Level)
+
+1. companies
+2. users
+3. role_user (pivot)
+4. companies
+5. short_urls
+6. invitations
+   All relationships are managed via Eloquent ORM.
+
+# Testing Strategy
+
+The following test cases are covered using PHPUnit:
+
+1. Authentication Tests
+   Login / Logout
+   Role-based access restrictions
+2. Authorization Tests
+   Admin access limited to own company
+   Member access limited to own URLs
+   SuperAdmin access across companies
+3. URL Tests
+   Admin & Member can create short URLs
+   SuperAdmin cannot create short URLs
+   Public short URL redirects correctly
+4. Invitation Tests
+   Valid invitation acceptance
+   Invalid or expired token rejection
+
+# Installation & Setup
+
+1. Clone Repository
+   git clone https://github.com/your-username/url-shortener.git
+   cd url-shortener
+
+2. Install Dependencies
+   composer install
+   composer global require laravel/installer 
+
+3. Environment Setup
+   cp .env.example .env
+   php artisan key:generate
+
+4. Database Configuration
+
+Update .env with database credentials:
+
+DB_CONNECTION=mysql
+DB_DATABASE=url_shortener
+DB_USERNAME=root
+DB_PASSWORD=
+
+5️⃣ Run Migrations & Seeders
+php artisan migrate --seed
+
+Seeder will create:
+
+SuperAdmin account
+
+Default roles
+
+6️⃣ Run Server
+php artisan serve
+
+🔑 Default SuperAdmin Credentials
+Email: superadmin@example.com
+Password: password
+
+(Change immediately after first login)
+
+🧪 Run Tests
+php artisan test

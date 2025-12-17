@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Invitation')
 @section('content')
-    <x-breadcrumb-component :home-route="['name' => 'Home', 'url' => route('dashboard')]" :parent-route="['name' => 'companies', 'url' => route('companies.index')]" :current-route="['name' => 'Create', 'url' => null]" />
+    <x-breadcrumb-component :home-route="['name' => 'Home', 'url' => route('dashboard')]" :parent-route="['name' => 'invitations', 'url' => route('invitations.index')]" :current-route="['name' => 'Create', 'url' => null]" />
     <div class="row  mt-4">
         <div class="col-lg-12">
             <div class="card shadow">

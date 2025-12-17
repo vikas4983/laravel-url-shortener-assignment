@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\ShortUrlController;
 use App\Jobs\SendInvitationEmailJob;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -9,13 +10,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
 Route::get('/register', function () {
-    abort(403, 'Registration is disabled.');
+    return redirect()
+        ->route('login')
+        ->with('error', 'Registration not allowed, Please login or contact to admin');
 })->name('register');
 
 Route::middleware(['auth'])->group(function () {
-
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -25,16 +26,9 @@ Route::middleware(['auth'])->group(function () {
     // Invitation CRUD
     Route::resource('invitations', InvitationController::class);
 
-    // Accept invitation
-    Route::post('/invitations/{id}/accept', [InvitationController::class, 'accept'])
-        ->name('invitations.accept');
-
-    // Reject invitation
-    Route::post('/invitations/{id}/reject', [InvitationController::class, 'reject'])
-        ->name('invitations.reject');
-
-    Route::get('send-email', function () {
-        SendInvitationEmailJob::dispatch('mmmdata2022@gmail.com');
-        return 'Email sent';
-    });
+    // SHORT-URL
+    Route::get('list-shortUrl', [ShortUrlController::class, 'index'])->name('shortUrls.index');
+    Route::get('create-shortUrl', [ShortUrlController::class, 'craete'])->name('shortUrls.create');
+    Route::post('store-shortUrl', [ShortUrlController::class, 'store'])->name('shortUrls.store');
+    Route::get('redirect-shortUrl', [ShortUrlController::class, 'redirect'])->name('shortUrls.redirect');
 });

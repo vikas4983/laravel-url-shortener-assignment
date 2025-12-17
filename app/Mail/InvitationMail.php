@@ -9,17 +9,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class InvitationMail extends Mailable
+class InvitationMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public  $invite;
 
     /**
      * Create a new message instance.
      */
-    public $email;
-    public function __construct($email)
+    public function __construct($invite)
     {
-        $this->email = $email;
+        $this->invite = $invite;
     }
 
     /**
@@ -28,7 +29,7 @@ class InvitationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Invitation Mail',
+            subject: 'You have received an invitation'
         );
     }
 
@@ -39,13 +40,14 @@ class InvitationMail extends Mailable
     {
         return new Content(
             view: 'emails.invitations.invitation',
+            with: [
+                'invite' => $this->invite,
+            ],
         );
     }
 
     /**
      * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {

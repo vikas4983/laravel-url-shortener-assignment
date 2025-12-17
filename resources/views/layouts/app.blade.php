@@ -59,8 +59,7 @@
                 <!-- Aplication Brand -->
                 <div class="app-brand">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('assets/theme/images/logo.png') }}" style="height: 50px; width:50px" alt="Mono">
-                        <span class="brand-name">Sembark Tech</span>
+                       <span class="brand-name">{{Auth::user()->company->name ?? 'SuperAdmin'}}</span>
                     </a>
                 </div>
                 <!-- begin sidebar scrollbar -->
@@ -75,33 +74,43 @@
                         </li>
 
                         <li class="section-title">
-                           URL-SHORTNER
+                            URL-SHORTNER
+                        </li>
+                        @if (auth()->check() && auth()->user()->hasRole('SuperAdmin'))
+                            <li class="has-sub">
+                                <a class="sidenav-item-link" href="{{ route('companies.index') }}"
+                                    aria-expanded="false" aria-controls="company">
+                                    <i class="mdi mdi mdi-office-building"></i>
+                                    <span class="nav-text">Companies <h5 class="badge badge-primary badge-pill">
+                                            {{ \App\Models\Company::count() ?? '0' }}
+                                        </h5>
+                                    </span> <b class="caret"></b>
+                                </a>
+
+                            </li>
+                        @endif
+
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="{{ route('invitations.index') }}" aria-expanded="false"
+                                aria-controls="invitation">
+                                <i class="mdi mdi mdi-office-building"></i>
+                                <span class="nav-text">Invitation <h5 class="badge badge-primary badge-pill">
+                                        {{ \App\Models\Invitation::where('invited_by', auth()->id())->count() ?? '0' }}
+                                    </h5>
+                                </span>
+                                <b class="caret"></b>
+                            </a>
                         </li>
                         <li class="has-sub">
-                            <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
-                                data-target="#category" aria-expanded="false" aria-controls="category">
+                            <a class="sidenav-item-link" href="{{ route('shortUrls.index') }}" aria-expanded="false"
+                                aria-controls="url-shortner">
                                 <i class="mdi mdi mdi-office-building"></i>
-                                <span class="nav-text">Companies <h5 class="badge badge-primary badge-pill">
-                                        {{ $count['guests'] ?? '' }}
+                                <span class="nav-text">Short-Urls <h5 class="badge badge-primary badge-pill">
+                                        {{ \App\Models\shortUrl::where('user_id', auth()->id())->count() ?? '0' }}
                                     </h5>
                                 </span> <b class="caret"></b>
                             </a>
-                            <ul class="collapse" id="category" data-parent="#sidebar-menu">
-                                <div class="sub-menu">
-                                    <li>
-                                        <a class="sidenav-item-link" href="{{route('companies.index')}}">
-                                            <span class="nav-text">List</span>
 
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="sidenav-item-link" href="{{route('companies.create')}}">
-                                            <span class="nav-text">Create</span>
-
-                                        </a>
-                                    </li>
-                                </div>
-                            </ul>
                         </li>
 
 
@@ -211,8 +220,7 @@
     <script src="{{ asset('assets/theme/js/chart.js') }}"></script>
     <script src="{{ asset('assets/theme/js/map.js') }}"></script>
     <script src="{{ asset('assets/theme/js/custom.js') }}"></script>
-    <script src="{{ asset('assets/theme/js/custom-js/action-button.js') }}"></script>
-    <script src="{{ asset('assets/theme/js/custom-js/copy-data.js') }}"></script>
+    
     <script>
         const logout = document.querySelector('#logout');
         if (logout) {
