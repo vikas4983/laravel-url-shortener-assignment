@@ -79,59 +79,6 @@ php artisan migrate
 php artisan db:seed
 ```
 
----
-## Assumptions & Design Decisions
-
-The following assumptions were made while implementing this assignment:
-
-### Invitation Handling Assumptions
-
-1. When an **Admin or SuperAdmin** sends an invitation, a record is created in the `invitations` table with:
-- `email`
-- `company_id`
-- `role_id`
-- `invited_id`
-- `token`
-- `status = pending`
-
-2. The invited user receives an **email invitation** containing a secure token-based link.
-
-3. **Accept Invitation Flow**
-- User clicks on the **Accept** button from the email
-- User is redirected to a **account setup form**
-- User account is created (or activated)
-- Password is securely stored using Laravel hashing
-- Invitation status is updated to **accepted**
-- Invitation token becomes invalid
-
-4. **Reject Invitation Flow**
-- User clicks on the **Reject** button from the email
-- No user account is created or activated
-- Invitation status is updated to **rejected**
-- Invitation token becomes invalid
-
-5. Each invitation link can be used **only once**.
-6. Expired, already accepted, or rejected invitations are not allowed to be reused.
-
----
-
-### Seeder Data Assumptions
-
-1. Users are inserted using Laravel seeders **only for development and testing purposes**.
-2. The following users are created via seeders:
-- One **SuperAdminSeeder**
-- One **UserSeeder** (assigned to a demo company)
-3. Seeder credentials are documented in the README for easy testing.
-4. In a real production system, users should be onboarded **only via the invitation process**.
-
----
-
-### General Assumptions
-
-- UI is kept minimal to focus on backend logic as per assignment expectations
-- Security and role-based authorization are prioritized over UI features
-- Laravel best practices are followed throughout the implementation
-
 ## Default Login Credentials
 
 ### Super Admin
