@@ -85,7 +85,7 @@ class InvitationController extends Controller
 
         $validatedData = $request->validated();
         $roleId = (int) $validatedData['role_id'];
-          
+
         // dd( $validatedData);
 
 
@@ -146,8 +146,9 @@ class InvitationController extends Controller
     {
         //
     }
-    public function accept($id)
+    public function accept(Request $request, $id)
     {
+        dd($request->all());
         $invitation = Invitation::findOrFail($id);
 
         $this->authorize('accept', $invitation);
@@ -170,8 +171,9 @@ class InvitationController extends Controller
             ->route('dashboard')
             ->with('success', 'Invitation accepted');
     }
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
+        dd($request->all());
         $invitation = Invitation::findOrFail($id);
 
         $this->authorize('reject', $invitation);
